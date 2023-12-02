@@ -1,0 +1,23 @@
+<html>
+
+<div id="app">
+    <h1>Rooms</h1>
+
+    <form action="/rooms/store" method="post">
+        <label for="trigger">Trigger:</label>
+        <input type="number" id="trigger" name="min_clients" placeholder="Enter trigger">
+
+        <label for="iterations">Iterations:</label>
+        <input type="number" id="iterations" name="iterations" placeholder="Enter iterations">
+
+        <label for="modelCode">Model Code:</label>
+        <input type="text" id="modelCode" name="modelCode" placeholder="Enter model code">
+
+        <label for="modelData">Model Data:</label>
+        <input type="text" id="modelData" name="modelData" placeholder="Enter model data">
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</html>

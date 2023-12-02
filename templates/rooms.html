@@ -1,0 +1,15 @@
+<html>
+
+<div id="app">
+    <h1>Rooms</h1>
+    <a href="/rooms/create">Create New Room</a>
+    {% for room in rooms %}
+    <p>
+        ID: {{room.id}}
+        Min: {{room.min_clients}}
+        Rounds: {{room.rounds}}
+    </p>
+    {% endfor %}
+</div>
+
+</html>
