@@ -113,6 +113,7 @@ async def room_store(
     iterations: Annotated[int, Form()],
     modelCode: Annotated[str, Form()],
     modelData: Annotated[str, Form()],
+    port: Annotated[str, Form()],
     current_user: Annotated[model.User, Depends(jwt.get_current_active_user)],
     db: Session = Depends(get_database_session),
 ):
@@ -121,6 +122,7 @@ async def room_store(
         rounds=iterations,
         code=modelCode,
         sample=modelData,
+        port = port,
     )
 
     usr = jwt.get_user(db, current_user.email)
@@ -134,30 +136,27 @@ async def room_store(
 
 
 CURR_PORT = 8001
-ports = set()
 
-def worker(room):
-    
-    ports.add(CURR_PORT)
-    print(CURR_PORT)
-    CURR_PORT += 1
-    
+def worker(room, port):
     server.server.start_server(
-    server_address=f"localhost:{curr_port}",
+    server_address=f"localhost:{port}",
     config=server.server.ServerConfig(num_rounds=room.rounds),
     grpc_max_message_length=1024*1024*1024,
     strategy=server.strategy
     )
 
 @app.post("/room/{room_id}/start")
-async def start_room_model(
+def start_room_model(
     room_id:int,
     current_user: Annotated[model.User, Depends(jwt.get_current_active_user)],
     db: Session = Depends(get_database_session),
 ):
     room = db.query(model.Room).filter(model.Room.id == room_id).first()
+    p = CURR_PORT
+    print(room.port)
     if(room):
-        t = Thread(target=worker, args=(room,))
+        t = Thread(target=worker, args=(room,room.port))
         t.start()
+    # worker(room, 8002)
     return {"started":room}
 

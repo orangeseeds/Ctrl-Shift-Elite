@@ -68,7 +68,7 @@ class FlowerClient(fl.client.NumPyClient):
 # Starting Flower client
 st.write("Connecting to the server...")
 fl.client.start_numpy_client(
-    server_address="localhost:8001", 
+    server_address="localhost:8005", 
     # server_address="localhost:"+str(sys.argv[1]), 
     client=FlowerClient(), 
     grpc_max_message_length=1024*1024*1024

@@ -2,6 +2,7 @@ from flwr import server, common
 import sys
 import numpy as np
 from typing import List
+from threading import Thread
 
 
 class SaveModelStrategy(server.strategy.FedAvg):
@@ -22,6 +23,21 @@ class SaveModelStrategy(server.strategy.FedAvg):
 
 
 strategy = SaveModelStrategy()
+
+
+
+# def worker(rounds, port):
+#     server.start_server(
+#     server_address=f"localhost:{port}",
+#     config=server.ServerConfig(num_rounds=rounds),
+#     grpc_max_message_length=1024*1024*1024,
+#     strategy=strategy
+#     )
+
+# # print(CURR_PORT)
+# t = Thread(target=worker, args=(2,8002))
+# t.start()
+
 '''
 server.start_server(
     server_address='localhost:8001',

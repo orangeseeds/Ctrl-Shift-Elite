@@ -29,5 +29,6 @@ class Room(Base):
     rounds = Column(Integer)
     code = Column(Text)
     sample = Column(Text)
+    port = Column(Integer)
     clients = relationship(
         "User", secondary=room_user_table, back_populates="rooms")
