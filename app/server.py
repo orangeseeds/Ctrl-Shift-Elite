@@ -11,6 +11,8 @@ import app.model as model
 import os
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import server
+from threading import Thread
 
 HOST = os.environ.get("HOST", "localhost")
 PORT = os.environ.get("PORT", 8000)
@@ -129,3 +131,33 @@ async def room_store(
     db.refresh(room)
     response = RedirectResponse('/rooms/create', status_code=303)
     return response
+
+
+CURR_PORT = 8001
+ports = set()
+
+def worker(room):
+    
+    ports.add(CURR_PORT)
+    print(CURR_PORT)
+    CURR_PORT += 1
+    
+    server.server.start_server(
+    server_address=f"localhost:{curr_port}",
+    config=server.server.ServerConfig(num_rounds=room.rounds),
+    grpc_max_message_length=1024*1024*1024,
+    strategy=server.strategy
+    )
+
+@app.post("/room/{room_id}/start")
+async def start_room_model(
+    room_id:int,
+    current_user: Annotated[model.User, Depends(jwt.get_current_active_user)],
+    db: Session = Depends(get_database_session),
+):
+    room = db.query(model.Room).filter(model.Room.id == room_id).first()
+    if(room):
+        t = Thread(target=worker, args=(room,))
+        t.start()
+    return {"started":room}
+
